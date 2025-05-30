@@ -10,10 +10,19 @@ class Value {
 }
 
 class Entity {
-  constructor(data) {
+  constructor(data, zones = []) {
     this.id = data.id;
     this.name = data.name;
     this._rawData = data;
+    this.zones = zones;
+    this.zoneMap = new Map();
+
+    // Create a map for quick zone lookup by ID
+    if (zones && zones.length > 0) {
+      zones.forEach((zone) => {
+        this.zoneMap.set(zone.id, zone);
+      });
+    }
   }
 
   toJSON() {
@@ -21,11 +30,25 @@ class Entity {
   }
 
   toString() {
-    return `${this.constructor.name}(id: ${this.id}, name: ${this.name})`;
+    let output = `${this.constructor.name}(id: ${this.id}, name: ${this.name})`;
+
+    // Add zone information if entity has a zone and we have zone data
+    if (this._rawData.zone && this.zoneMap.has(this._rawData.zone)) {
+      const zone = this.zoneMap.get(this._rawData.zone);
+      output += ` (Zone: ${zone.name})`;
+    }
+
+    return output;
   }
 
   print() {
-    console.log(JSON.stringify(this._rawData, null, 2));
+    // Debug: JSON.stringify(this._rawData, null, 2)
+
+    // Add zone information if available
+    if (this._rawData.zone && this.zoneMap.has(this._rawData.zone)) {
+      const zone = this.zoneMap.get(this._rawData.zone);
+      // Debug: Zone info
+    }
   }
 
   hasCapability(capability) {
@@ -38,8 +61,8 @@ class Entity {
 }
 
 class Variable extends Entity {
-  constructor(data) {
-    super(data);
+  constructor(data, zones = []) {
+    super(data, zones);
     this.type = data.type;
     this.value = data.value;
   }
@@ -61,13 +84,21 @@ class Variable extends Entity {
 }
 
 class Device extends Entity {
-  constructor(data) {
-    super(data);
+  constructor(data, zones = []) {
+    super(data, zones);
     this.driverId = data.driverId;
     this.class = data.class;
     this.zone = data.zone;
     this.capabilities = data.capabilities || [];
     this.available = data.available;
+  }
+
+  get zoneName() {
+    if (this.zone && this.zoneMap.has(this.zone)) {
+      const zone = this.zoneMap.get(this.zone);
+      return zone.name;
+    }
+    return null;
   }
 
   toString() {
@@ -94,9 +125,30 @@ class Device extends Entity {
   }
 }
 
+class Zone extends Entity {
+  constructor(data) {
+    super(data);
+    this.parent = data.parent;
+    this.icon = data.icon;
+  }
+
+  toString() {
+    return `Zone(id: ${this.id}, name: ${this.name})`;
+  }
+}
+
 class Items {
-  constructor(entities = []) {
+  constructor(entities = [], zones = []) {
     this.items = entities;
+    this.zones = zones;
+    this.zoneMap = new Map();
+
+    // Create a map for quick zone lookup by ID
+    if (zones && zones.length > 0) {
+      zones.forEach((zone) => {
+        this.zoneMap.set(zone.id, zone);
+      });
+    }
   }
 
   add(entity) {
@@ -112,11 +164,11 @@ class Items {
   }
 
   slice(start, end) {
-    return new Items(this.items.slice(start, end));
+    return new Items(this.items.slice(start, end), this.zones);
   }
 
   filter(callback) {
-    return new Items(this.items.filter(callback));
+    return new Items(this.items.filter(callback), this.zones);
   }
 
   find(callback) {
@@ -128,9 +180,18 @@ class Items {
   }
 
   print() {
-    console.log(`Items (${this.length}):`);
+    // Debug: Items count and details
     this.items.forEach((entity) => {
-      console.log(`- ${entity.id}: ${entity.name}`);
+      let output = `- ${entity.id}: ${entity.name}`;
+
+      // Add zone information if entity has a zone and we have zone data
+      const zoneId = entity.zone || entity._rawData.zone;
+      if (zoneId && this.zoneMap.has(zoneId)) {
+        const zone = this.zoneMap.get(zoneId);
+        output += ` (Zone: ${zone.name})`;
+      }
+
+      // Debug: Entity output
     });
   }
 
@@ -139,4 +200,4 @@ class Items {
   }
 }
 
-export { Value, Entity, Variable, Device, Items };
+export { Value, Entity, Variable, Device, Zone, Items };

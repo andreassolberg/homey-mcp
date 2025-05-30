@@ -1,0 +1,19 @@
+# GitHub Copilot ignore file
+# This file tells Copilot which files to exclude from suggestions and context
+
+# Environment variables and secrets
+.env
+.env.*
+*.env
+
+# Configuration files with sensitive data
+config/secrets.json
+config/credentials.json
+
+# API keys and tokens
+**/api-keys.json
+**/tokens.json
+
+# Cache files that might contain sensitive data
+cache/
+*.cache

@@ -8,6 +8,10 @@ node_modules/
 .env.test.local
 .env.production.local
 
+# Claude Desktop configuration (contains sensitive tokens)
+claude_desktop_config.json
+claude_desktop_config_with_dotenv.json
+
 # Cache directory
 cache/
 

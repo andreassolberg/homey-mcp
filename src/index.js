@@ -32,6 +32,16 @@ async function main() {
   }
 
   try {
+    console.log("\nFetching zones...");
+    const zones = await homey.getZones();
+    console.log(`Found ${zones.length} zones`);
+    console.log("First 5 zones:");
+    zones.slice(0, 5).print();
+  } catch (error) {
+    console.error("Failed to fetch zones:", error.message);
+  }
+
+  try {
     console.log("\nLooking for specific item...");
     const devices = await homey.getDevices();
     const specificDevice = devices.getItem(
@@ -75,15 +85,73 @@ async function main() {
     console.log(
       `Temperature readings from ${temperatureDevices.length} devices:`
     );
+
+    // Create table data
+    const tableData = [];
     temperatureDevices.forEach((device) => {
       const temperatureValue = device.getValue("measure_temperature");
-      if (temperatureValue) {
-        console.log(
-          `- ${device.name}: ${temperatureValue.value}°C (${temperatureValue.type})`
-        );
-      } else {
-        console.log(`- ${device.name}: No temperature value available`);
+
+      // Get zone information
+      const zoneId = device.zone || device._rawData.zone;
+      let zoneName = "Unknown";
+      if (zoneId && device.zoneMap && device.zoneMap.has(zoneId)) {
+        const zone = device.zoneMap.get(zoneId);
+        zoneName = zone.name;
       }
+
+      const temperature = temperatureValue
+        ? `${temperatureValue.value}°C`
+        : "N/A";
+
+      tableData.push({
+        device: device.name,
+        zone: zoneName,
+        temperature: temperature,
+      });
+    });
+
+    // Sort by zone name, then by device name
+    tableData.sort((a, b) => {
+      if (a.zone !== b.zone) {
+        return a.zone.localeCompare(b.zone);
+      }
+      return a.device.localeCompare(b.device);
+    });
+
+    // Calculate column widths
+    const maxDeviceLength = Math.max(
+      ...tableData.map((d) => d.device.length),
+      "Device".length
+    );
+    const maxZoneLength = Math.max(
+      ...tableData.map((d) => d.zone.length),
+      "Zone".length
+    );
+    const maxTempLength = Math.max(
+      ...tableData.map((d) => d.temperature.length),
+      "Temperature".length
+    );
+
+    // Print header
+    console.log("");
+    console.log(
+      `${"Device".padEnd(maxDeviceLength)} | ${"Zone".padEnd(
+        maxZoneLength
+      )} | ${"Temperature".padEnd(maxTempLength)}`
+    );
+    console.log(
+      `${"-".repeat(maxDeviceLength)}-|-${"-".repeat(
+        maxZoneLength
+      )}-|-${"-".repeat(maxTempLength)}`
+    );
+
+    // Print data rows
+    tableData.forEach((row) => {
+      console.log(
+        `${row.device.padEnd(maxDeviceLength)} | ${row.zone.padEnd(
+          maxZoneLength
+        )} | ${row.temperature.padEnd(maxTempLength)}`
+      );
     });
   } catch (error) {
     console.error("Failed to get temperature values:", error.message);
