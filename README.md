@@ -1,48 +1,48 @@
 # Homey MCP Server
 
-En Model Context Protocol (MCP) server for å integrere med Homey Pro smart home system. Denne serveren gir tilgang til Homey-enheter, soner, variabler og logikk gjennom MCP-protokollen.
+A Model Context Protocol (MCP) server for integrating with Homey Pro smart home system. This server provides access to Homey devices, zones, variables, and logic through the MCP protocol.
 
-## 🏠 Funksjonalitet
+## 🏠 Features
 
-- **Enheter**: Hent og søk i alle Homey-enheter
-- **Soner**: List alle soner i hjemmet ditt
-- **Variabler**: Tilgang til Homey-variabler
-- **Logikk**: Hent informasjon om logikkflyt
-- **Temperatur**: Spesialiserte funksjoner for temperatursensorer
-- **Cache**: Automatisk caching av data for bedre ytelse
+- **Devices**: Retrieve and search all Homey devices
+- **Zones**: List all zones in your home
+- **Variables**: Access to Homey variables
+- **Logic**: Retrieve information about logic flows
+- **Temperature**: Specialized functions for temperature sensors
+- **Cache**: Automatic data caching for better performance
 
-## 📁 Prosjektstruktur
+## 📁 Project Structure
 
 ```
 homey-mcp/
-├── src/                     # Hovedkildekode
-│   ├── server.js           # MCP server hovedfil
-│   ├── homey.js           # Homey API klient
-│   ├── entities.js        # Data modeller (Device, Zone, Variable, etc.)
+├── src/                     # Main source code
+│   ├── server.js           # MCP server main file
+│   ├── homey.js           # Homey API client
+│   ├── entities.js        # Data models (Device, Zone, Variable, etc.)
 │   └── index.js           # Standalone test script
-├── scripts/                # Test og verifikasjonsscripts
-│   ├── test-mcp.sh        # Hovedtestscript
-│   ├── verify-mcp.sh      # Rask verifikasjon
-│   ├── test-temperature.sh # Test temperaturfunksjoner
-│   ├── interactive-test.sh # Interaktiv testing
-│   ├── status-check.sh    # Statussjekk
-│   └── final-verification.sh # Omfattende test
-├── config/                 # Konfigurasjonsfiler
-│   └── .env.example       # Eksempel på miljøvariabler
-├── cache/                  # Cache-filer (auto-generert)
+├── scripts/                # Test and verification scripts
+│   ├── test-mcp.sh        # Main test script
+│   ├── verify-mcp.sh      # Quick verification
+│   ├── test-temperature.sh # Test temperature functions
+│   ├── interactive-test.sh # Interactive testing
+│   ├── status-check.sh    # Status check
+│   └── final-verification.sh # Comprehensive test
+├── config/                 # Configuration files
+│   └── .env.example       # Example environment variables
+├── cache/                  # Cache files (auto-generated)
 │   ├── devices.json
 │   ├── zones.json
 │   ├── variables.json
 │   └── logic.json
-├── .env                    # Dine miljøvariabler
+├── .env                    # Your environment variables
 ├── package.json
-├── claude_desktop_config.json # Claude Desktop konfigurasjon
+├── claude_desktop_config.json # Claude Desktop configuration
 └── README.md
 ```
 
-## 🚀 Oppsett
+## 🚀 Setup
 
-### 1. Klon og installer avhengigheter
+### 1. Clone and install dependencies
 
 ```bash
 git clone <repository-url>
@@ -50,50 +50,50 @@ cd homey-mcp
 npm install
 ```
 
-### 2. Konfigurer miljøvariabler
+### 2. Configure environment variables
 
-Kopier eksempelfilen og fyll inn dine verdier:
+Copy the example file and fill in your values:
 
 ```bash
 cp config/.env.example .env
 ```
 
-Rediger `.env` og legg inn:
+Edit `.env` and add:
 
-- `HOMEY_TOKEN`: Din Homey API token (få denne fra [Homey Developer Tools](https://tools.developer.homey.app/))
-- `HOMEY_ID`: Din Homey ID (finnes i Homey Pro sine innstillinger)
+- `HOMEY_TOKEN`: Your Homey API token (get this from [Homey Developer Tools](https://tools.developer.homey.app/))
+- `HOMEY_ID`: Your Homey ID (found in Homey Pro settings)
 
-### 3. Test oppsettet
+### 3. Test the setup
 
 ```bash
-# Test grunnleggende funksjonalitet
+# Test basic functionality
 npm start
 
 # Test MCP server
 npm run mcp
 ```
 
-## 🔧 Bruk
+## 🔧 Usage
 
-### Som MCP Server
+### As MCP Server
 
-Serveren kan brukes med Claude Desktop eller andre MCP-kompatible klienter:
+The server can be used with Claude Desktop or other MCP-compatible clients:
 
 ```bash
 npm run mcp
 ```
 
-### Som Standalone Script
+### As Standalone Script
 
-For testing og utvikling:
+For testing and development:
 
 ```bash
 npm start
 ```
 
-### Med Claude Desktop
+### With Claude Desktop
 
-Legg til følgende i din `claude_desktop_config.json`:
+Add the following to your `claude_desktop_config.json`:
 
 ```json
 {
@@ -102,119 +102,119 @@ Legg til følgende i din `claude_desktop_config.json`:
       "command": "node",
       "args": ["/path/to/homey-mcp/src/server.js"],
       "env": {
-        "HOMEY_TOKEN": "din_token_her",
-        "HOMEY_ID": "din_homey_id_her"
+        "HOMEY_TOKEN": "your_token_here",
+        "HOMEY_ID": "your_homey_id_here"
       }
     }
   }
 }
 ```
 
-## 🛠️ Tilgjengelige Verktøy
+## 🛠️ Available Tools
 
 ### `get_homey_devices`
 
-Hent alle enheter eller filtrer etter sone.
+Get all devices or filter by zone.
 
-**Parametere:**
+**Parameters:**
 
-- `zone` (valgfri): Filtrer enheter etter sone-navn
+- `zone` (optional): Filter devices by zone name
 
 ### `search_homey_devices`
 
-Søk etter enheter basert på navn eller egenskaper.
+Search for devices based on name or properties.
 
-**Parametere:**
+**Parameters:**
 
-- `query`: Søketekst
+- `query`: Search text
 
 ### `get_homey_zones`
 
-Hent alle soner i hjemmet.
+Get all zones in the home.
 
 ### `get_homey_variables`
 
-Hent alle Homey-variabler.
+Get all Homey variables.
 
 ### `get_homey_logic`
 
-Hent informasjon om logikkflyt.
+Get information about logic flows.
 
 ### `get_temperature`
 
-Hent temperaturdata fra sensorer.
+Get temperature data from sensors.
 
-**Parametere:**
+**Parameters:**
 
-- `zone` (valgfri): Filtrer etter sone
-- `deviceId` (valgfri): Hent fra spesifikk enhet
+- `zone` (optional): Filter by zone
+- `deviceId` (optional): Get from specific device
 
 ## 🧪 Testing
 
-Prosjektet inkluderer flere testscripts i `scripts/` mappen:
+The project includes several test scripts in the `scripts/` folder:
 
 ```bash
-# Rask verifikasjon
+# Quick verification
 ./scripts/verify-mcp.sh
 
-# Omfattende testing
+# Comprehensive testing
 ./scripts/test-mcp.sh
 
-# Test temperaturfunksjoner
+# Test temperature functions
 ./scripts/test-temperature.sh
 
-# Interaktiv testing
+# Interactive testing
 ./scripts/interactive-test.sh
 
-# Statussjekk
+# Status check
 ./scripts/status-check.sh
 
-# Final verifikasjon
+# Final verification
 ./scripts/final-verification.sh
 ```
 
-## 📦 Avhengigheter
+## 📦 Dependencies
 
-- **@modelcontextprotocol/sdk**: MCP SDK for server-implementasjon
-- **dotenv**: Miljøvariabel-håndtering
+- **@modelcontextprotocol/sdk**: MCP SDK for server implementation
+- **dotenv**: Environment variable management
 
-## 🔒 Sikkerhet
+## 🔒 Security
 
-- API tokens og sensitive data lagres i `.env` filen
-- Cache-filer kan inneholde sensitive data og er ekskludert fra git
-- Bruk `.copilotignore` for å ekskludere sensitive filer fra AI-assistanse
+- API tokens and sensitive data are stored in the `.env` file
+- Cache files may contain sensitive data and are excluded from git
+- Use `.copilotignore` to exclude sensitive files from AI assistance
 
-## 📝 Utvikling
+## 📝 Development
 
-### Legg til nye funksjoner
+### Adding new features
 
-1. Implementer logikken i `src/homey.js`
-2. Legg til MCP tool definition i `src/server.js`
-3. Oppdater entiteter i `src/entities.js` om nødvendig
-4. Lag tester i `scripts/` mappen
+1. Implement the logic in `src/homey.js`
+2. Add MCP tool definition in `src/server.js`
+3. Update entities in `src/entities.js` if necessary
+4. Create tests in the `scripts/` folder
 
-### Cache-håndtering
+### Cache handling
 
-Serveren bruker automatisk caching for å redusere API-kall til Homey:
+The server uses automatic caching to reduce API calls to Homey:
 
-- Cache lagres i `cache/` mappen
-- Cache kan aktiveres/deaktiveres via alternativer
-- Cache filer oppdateres automatisk ved behov
+- Cache is stored in the `cache/` folder
+- Cache can be enabled/disabled via options
+- Cache files are updated automatically when needed
 
-## 🐛 Feilsøking
+## 🐛 Troubleshooting
 
-1. Sjekk at `.env` filen er korrekt konfigurert
-2. Verifiser at Homey Pro er tilgjengelig og online
-3. Kontroller at API token har nødvendige tillatelser
-4. Kjør testscripts for å diagnostisere problemer
-5. **MCP-kompatibilitet**: Debug-meldinger er fjernet fra serveren for å sikre ren JSON-kommunikasjon med Claude Desktop
+1. Check that the `.env` file is correctly configured
+2. Verify that Homey Pro is available and online
+3. Confirm that the API token has necessary permissions
+4. Run test scripts to diagnose problems
+5. **MCP compatibility**: Debug messages have been removed from the server to ensure clean JSON communication with Claude Desktop
 
-### Vanlige problemer
+### Common issues
 
-- **"Unexpected token" feil i Claude**: Dette skyldes debug-utskrifter til stdout. Alle console.log/debug-meldinger er fjernet fra MCP serveren.
-- **Cache problemer**: Slett `cache/` mappen og la serveren regenerere cache-filene.
-- **Environment variable problemer**: Sjekk at `.env` filen er i rot-mappen og inneholder riktige verdier.
+- **"Unexpected token" error in Claude**: This is caused by debug output to stdout. All console.log/debug messages have been removed from the MCP server.
+- **Cache problems**: Delete the `cache/` folder and let the server regenerate the cache files.
+- **Environment variable problems**: Check that the `.env` file is in the root folder and contains correct values.
 
-## 📄 Lisens
+## 📄 License
 
 MIT License
