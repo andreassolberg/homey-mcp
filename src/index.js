@@ -104,6 +104,7 @@ async function main() {
         : "N/A";
 
       tableData.push({
+        id: device.id,
         device: device.name,
         zone: zoneName,
         temperature: temperature,
@@ -119,6 +120,10 @@ async function main() {
     });
 
     // Calculate column widths
+    const maxIdLength = Math.max(
+      ...tableData.map((d) => d.id.length),
+      "ID".length
+    );
     const maxDeviceLength = Math.max(
       ...tableData.map((d) => d.device.length),
       "Device".length
@@ -135,12 +140,12 @@ async function main() {
     // Print header
     console.log("");
     console.log(
-      `${"Device".padEnd(maxDeviceLength)} | ${"Zone".padEnd(
+      `${"ID".padEnd(maxIdLength)} | ${"Device".padEnd(maxDeviceLength)} | ${"Zone".padEnd(
         maxZoneLength
       )} | ${"Temperature".padEnd(maxTempLength)}`
     );
     console.log(
-      `${"-".repeat(maxDeviceLength)}-|-${"-".repeat(
+      `${"-".repeat(maxIdLength)}-|-${"-".repeat(maxDeviceLength)}-|-${"-".repeat(
         maxZoneLength
       )}-|-${"-".repeat(maxTempLength)}`
     );
@@ -148,7 +153,7 @@ async function main() {
     // Print data rows
     tableData.forEach((row) => {
       console.log(
-        `${row.device.padEnd(maxDeviceLength)} | ${row.zone.padEnd(
+        `${row.id.padEnd(maxIdLength)} | ${row.device.padEnd(maxDeviceLength)} | ${row.zone.padEnd(
           maxZoneLength
         )} | ${row.temperature.padEnd(maxTempLength)}`
       );
