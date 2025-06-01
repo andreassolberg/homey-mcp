@@ -4,6 +4,7 @@ import { Homey } from "./services/index.js";
 import {
   getAllHomeyItems,
   getPresenceValue,
+  getTemperatureValue,
 } from "./helpers.js";
 import fs from "fs";
 import path from "path";
@@ -36,7 +37,7 @@ class House {
 
   async processRoom(room) {
     // This is a placeholder function for room processing
-    // Currently implements: lookup presence device value
+    // Currently implements: lookup presence device value and temperature device value
 
     if (room.presence) {
       try {
@@ -79,6 +80,41 @@ class House {
           error.message
         );
         room.presence = false; // Default to false on error
+      }
+    }
+
+    // Process temperature lookup
+    if (room.temperature) {
+      try {
+        // Get all items from Homey (devices and logic variables)
+        const allItems = await this.getAllItems();
+
+        // Find the temperature item by ID (primary lookup method for temperature)
+        let temperatureItem = allItems.getItemById(room.temperature);
+        if (!temperatureItem) {
+          temperatureItem = allItems.getItemByName(room.temperature);
+        }
+
+        if (temperatureItem) {
+          // Get the temperature value from the item
+          const temperatureValue = getTemperatureValue(temperatureItem);
+          room.temperature = temperatureValue;
+
+          console.log(
+            `Temperature for room ${room.label}: ${temperatureValue}°C (from ${temperatureItem.name})`
+          );
+        } else {
+          console.warn(
+            `Temperature item not found for room ${room.label}: ${room.temperature}`
+          );
+          room.temperature = null; // Default to null if item not found
+        }
+      } catch (error) {
+        console.error(
+          `Error processing temperature for room ${room.label}:`,
+          error.message
+        );
+        room.temperature = null; // Default to null on error
       }
     }
 

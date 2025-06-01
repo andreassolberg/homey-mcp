@@ -64,4 +64,35 @@ function getPresenceValue(item) {
   return null;
 }
 
-export { getAllHomeyItems, getPresenceValue };
+/**
+ * Get the temperature value from a device or variable
+ */
+function getTemperatureValue(item) {
+  if (!item) {
+    return null;
+  }
+
+  // For devices, try temperature capability
+  if (item.hasCapability && typeof item.getValue === "function") {
+    const temperatureValue = item.getValue("measure_temperature");
+    if (temperatureValue) {
+      return temperatureValue.value;
+    }
+  }
+
+  // For logic variables, get the value directly
+  if (item.type && item.value !== undefined) {
+    if (item.type === "number") {
+      return item.value;
+    }
+    // Try to parse string as number
+    if (typeof item.value === "string") {
+      const parsed = parseFloat(item.value);
+      return !isNaN(parsed) ? parsed : null;
+    }
+  }
+
+  return null;
+}
+
+export { getAllHomeyItems, getPresenceValue, getTemperatureValue };
