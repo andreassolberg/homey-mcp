@@ -1,7 +1,10 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { Variable, Device, Zone, Items } from "./entities.js";
+import Variable from "../models/Variable.js";
+import Device from "../models/Device.js";
+import Zone from "../models/Zone.js";
+import Items from "../models/Items.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,7 +21,7 @@ class Homey {
       ? path.isAbsolute(options.cacheDir)
         ? options.cacheDir
         : path.join(__dirname, options.cacheDir)
-      : path.join(__dirname, "..", "cache");
+      : path.join(__dirname, "..", "..", "cache");
   }
 
   saveToCache(filename, data) {

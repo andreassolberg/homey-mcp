@@ -1,6 +1,11 @@
 import dotenv from "dotenv";
 import express from "express";
-import Homey from "./homey.js";
+import { Homey } from "./services/index.js";
+import {
+  getAllHomeyItems,
+  findItemBySearch,
+  getPresenceValue,
+} from "./helpers.js";
 import fs from "fs";
 import path from "path";
 
@@ -11,6 +16,7 @@ console.log("HOMEY_TOKEN:", process.env.HOMEY_TOKEN);
 class House {
   constructor(homey) {
     this.homey = homey;
+    this.allItems = null; // Cache for all Homey items
     const configPath = path.resolve("./config/house.json");
     try {
       const configFile = fs.readFileSync(configPath, "utf8");
@@ -22,9 +28,67 @@ class House {
     }
   }
 
-  getData() {
-    let data = {};
-    return this.config;
+  async getAllItems() {
+    if (!this.allItems) {
+      this.allItems = await getAllHomeyItems(this.homey);
+    }
+    return this.allItems;
+  }
+
+  async processRoom(room) {
+    // This is a placeholder function for room processing
+    // Currently implements: lookup presence device value
+
+    if (room.presence) {
+      try {
+        // Get all items from Homey (devices and logic variables)
+        const allItems = await this.getAllItems();
+
+        // Find the presence item by searching through all items
+        const presenceItem = findItemBySearch(allItems, room.presence);
+
+        if (presenceItem) {
+          // Get the presence value from the item
+          const presenceValue = getPresenceValue(presenceItem);
+          room.presence = presenceValue;
+
+          console.log(
+            `Presence for room ${room.label}: ${presenceValue} (from ${presenceItem.name})`
+          );
+        } else {
+          console.warn(
+            `Presence item not found for room ${room.label}: ${room.presence}`
+          );
+          room.presence = null; // Default to null if item not found
+        }
+      } catch (error) {
+        console.error(
+          `Error processing presence for room ${room.label}:`,
+          error.message
+        );
+        room.presence = false; // Default to false on error
+      }
+    }
+
+    return room;
+  }
+
+  async getData() {
+    // Start with the original dataset
+    let data = JSON.parse(JSON.stringify(this.config)); // Deep clone to avoid modifying original
+
+    // Process each floor and room
+    if (data.floors) {
+      for (let floor of data.floors) {
+        if (floor.rooms) {
+          for (let i = 0; i < floor.rooms.length; i++) {
+            floor.rooms[i] = await this.processRoom(floor.rooms[i]);
+          }
+        }
+      }
+    }
+
+    return data;
   }
 
   getConfig() {

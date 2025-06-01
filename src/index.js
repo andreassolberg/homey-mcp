@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import Homey from "./homey.js";
+import { Homey } from "./services/index.js";
 
 dotenv.config();
 

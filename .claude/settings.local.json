@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(npm start)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(rm:*)",
+      "Bash(timeout 10s npm run mcp)",
+      "Bash(./scripts/verify-mcp.sh:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
