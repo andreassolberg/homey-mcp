@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "data": "node --watch src/data.js",
+    "data": "node --watch --trace-warnings src/data.js",
     "mcp": "node src/server.js"
   },
   "keywords": [

@@ -20,35 +20,6 @@ async function getAllHomeyItems(homey) {
   }
 }
 
-/**
- * Find an item by various search criteria
- */
-function findItemBySearch(items, searchTerm) {
-  if (!searchTerm || !items.items) {
-    return null;
-  }
-
-  // Try exact matches first
-  let item = items.items.find(
-    (item) => item.name === searchTerm || item.id === searchTerm
-  );
-
-  if (item) {
-    return item;
-  }
-
-  // Try partial matches for binary sensor naming convention
-  if (searchTerm.startsWith("binary_sensor.")) {
-    const searchName = searchTerm
-      .replace("binary_sensor.presence_", "")
-      .replace("binary_sensor.", "");
-    item = items.items.find((item) =>
-      item.name.toLowerCase().includes(searchName.toLowerCase())
-    );
-  }
-
-  return item;
-}
 
 /**
  * Get the presence/motion value from a device or variable
@@ -93,4 +64,4 @@ function getPresenceValue(item) {
   return null;
 }
 
-export { getAllHomeyItems, findItemBySearch, getPresenceValue };
+export { getAllHomeyItems, getPresenceValue };

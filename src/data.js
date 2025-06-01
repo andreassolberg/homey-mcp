@@ -3,7 +3,6 @@ import express from "express";
 import { Homey } from "./services/index.js";
 import {
   getAllHomeyItems,
-  findItemBySearch,
   getPresenceValue,
 } from "./helpers.js";
 import fs from "fs";
@@ -44,8 +43,21 @@ class House {
         // Get all items from Homey (devices and logic variables)
         const allItems = await this.getAllItems();
 
-        // Find the presence item by searching through all items
-        const presenceItem = findItemBySearch(allItems, room.presence);
+        // Find the presence item by name or ID
+        let presenceItem = allItems.getItemByName(room.presence);
+        if (!presenceItem) {
+          presenceItem = allItems.getItemById(room.presence);
+        }
+        
+        // Handle binary sensor naming convention
+        if (!presenceItem && room.presence.startsWith("binary_sensor.")) {
+          const searchName = room.presence
+            .replace("binary_sensor.presence_", "")
+            .replace("binary_sensor.", "");
+          presenceItem = allItems.items.find((item) =>
+            item.name.toLowerCase().includes(searchName.toLowerCase())
+          );
+        }
 
         if (presenceItem) {
           // Get the presence value from the item
