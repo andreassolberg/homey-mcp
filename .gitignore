@@ -18,6 +18,9 @@ config/house.json
 # Cache directory
 cache/
 
+# Database files
+status.db
+
 # Logs
 logs
 *.log
