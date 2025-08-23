@@ -1,0 +1,15 @@
+{
+  "batteryThreshold": 20,
+  "staleHoursThreshold": 24,
+  "showAllDevices": false,
+  "showOfflineDevices": true,
+  "ignore": [
+    "b7141927-1746-4fe0-9db7-1de6316b5ad6",
+    "31df7c13-17a0-4479-b9d8-9a631d353c37",
+    "a7e12f74-81ad-4cd8-a511-6eb664a02bce",
+    "1547e92d-4a36-4ef9-8b95-e967d0284f22",
+    "92ef2694-5bea-4872-8df4-8682e6dc185d",
+    "341c3a17-c18b-4040-8097-86b83685472a",
+    "91ab58b7-082c-44f3-961a-4ba40aa98024"
+  ]
+}
