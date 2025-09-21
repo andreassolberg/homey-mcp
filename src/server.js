@@ -455,3 +455,5 @@ class HomeyMCPServer {
 // Start the server
 const server = new HomeyMCPServer();
 server.run().catch(console.error);
+
+export default HomeyMCPServer;

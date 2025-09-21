@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Generate the .env file and then start the app
-CMD ["/bin/sh", "-c", "npm run mcp"]
+CMD ["/bin/sh", "-c", "npm run mcp-http"]
