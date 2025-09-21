@@ -19,11 +19,14 @@ import { Homey } from "./services/index.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load environment variables from .env file in project root
-config({ path: path.join(__dirname, "..", ".env") });
 
 class HomeyMCPServer {
   constructor() {
+    if (!process.env.HOMEY_TOKEN || !process.env.HOMEY_ID) {
+      // Load environment variables from .env file in project root
+      config({ path: path.join(__dirname, "..", ".env") });
+    }
+
     this.server = new Server(
       {
         name: "homey-mcp-server",
@@ -452,3 +455,5 @@ class HomeyMCPServer {
 // Start the server
 const server = new HomeyMCPServer();
 server.run().catch(console.error);
+
+export default HomeyMCPServer;

@@ -8,6 +8,7 @@
     "start": "node src/index.js",
     "data": "node --watch --trace-warnings src/data.js",
     "mcp": "node src/server.js",
+    "mcp-http": "node src/http.js",
     "status": "node src/status.js"
   },
   "keywords": [
